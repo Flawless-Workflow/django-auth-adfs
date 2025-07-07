@@ -264,18 +264,21 @@ class ProviderConfig(object):
             raise ConfigLoadError
 
         self._load_keys(signing_certificates)
-        tenant_id = "common" if settings.ENABLE_MULTIPLE_TENANTS is True else settings.TENANT_ID
         try:
-            self.authorization_endpoint = openid_cfg["authorization_endpoint"].replace(
-                settings.TENANT_ID, tenant_id
-            )
-            self.token_endpoint = openid_cfg["token_endpoint"].replace(
-                settings.TENANT_ID, tenant_id
-            )
-            self.end_session_endpoint = openid_cfg["end_session_endpoint"].replace(
-                settings.TENANT_ID, tenant_id
-            )
-            if settings.TENANT_ID != 'adfs':
+            self.authorization_endpoint = openid_cfg["authorization_endpoint"]
+            self.token_endpoint = openid_cfg["token_endpoint"]
+            self.end_session_endpoint = openid_cfg["end_session_endpoint"]
+            if settings.TENANT_ID != "adfs":
+                if settings.ENABLE_MULTIPLE_TENANTS is True:
+                    self.authorization_endpoint = self.authorization_endpoint.replace(
+                        settings.TENANT_ID, "common"
+                    )
+                    self.token_endpoint = self.token_endpoint.replace(
+                        settings.TENANT_ID, "common"
+                    )
+                    self.end_session_endpoint = self.end_session_endpoint.replace(
+                        settings.TENANT_ID, "common"
+                    )
                 self.issuer = openid_cfg["issuer"]
                 self.msgraph_endpoint = openid_cfg["msgraph_host"]
             else:
