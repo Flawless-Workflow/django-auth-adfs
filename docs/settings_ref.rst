@@ -208,9 +208,8 @@ ENABLE_MULTIPLE_TENANTS
 * **Default**: ``False``
 * **Type**: ``boolean``
 
-Setting this to ``True`` will allow users to log in with multiple tenants.
-This is useful when you have a multi-tenant application and want to allow users to log in
-with their own Azure AD tenant.
+Setting this to ``True`` will allow users from other Azure AD tenants to log in.
+This is useful when you have a multi-tenant application and want to allow users from different Azure AD tenants to log in.
 
 JWT_LEEWAY
 -----------
