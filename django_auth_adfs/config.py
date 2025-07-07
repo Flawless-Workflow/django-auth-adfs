@@ -266,16 +266,14 @@ class ProviderConfig(object):
         self._load_keys(signing_certificates)
         tenant_id = "common" if settings.ENABLE_MULTIPLE_TENANTS else settings.TENANT_ID
         try:
-            self.authorization_endpoint = (
-                "https://login.microsoftonline.com/{}/oauth2/authorize".format(
-                    tenant_id
-                )
+            self.authorization_endpoint = openid_cfg["authorization_endpoint"].replace(
+                settings.TENANT_ID, tenant_id
             )
-            self.token_endpoint = (
-                "https://login.microsoftonline.com/{}/oauth2/token".format(tenant_id)
+            self.token_endpoint = openid_cfg["token_endpoint"].replace(
+                settings.TENANT_ID, tenant_id
             )
-            self.end_session_endpoint = (
-                "https://login.microsoftonline.com/{}/oauth2/logout".format(tenant_id)
+            self.end_session_endpoint = openid_cfg["end_session_endpoint"].replace(
+                settings.TENANT_ID, tenant_id
             )
             if settings.TENANT_ID != 'adfs':
                 self.issuer = openid_cfg["issuer"]
