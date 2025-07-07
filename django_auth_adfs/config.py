@@ -264,7 +264,7 @@ class ProviderConfig(object):
             raise ConfigLoadError
 
         self._load_keys(signing_certificates)
-        tenant_id = "common" if settings.ENABLE_MULTIPLE_TENANTS else settings.TENANT_ID
+        tenant_id = "common" if settings.ENABLE_MULTIPLE_TENANTS is True else settings.TENANT_ID
         try:
             self.authorization_endpoint = openid_cfg["authorization_endpoint"].replace(
                 settings.TENANT_ID, tenant_id
