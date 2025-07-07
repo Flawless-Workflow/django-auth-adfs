@@ -203,6 +203,14 @@ in a template instead of the regular ``<a href="{% url 'django_auth_adfs:login' 
     This does not work with ADFS 3.0 on windows 2012 because this setting requires OpenID Connect
     which is not supported on ADFS 3.0
 
+ENABLE_MULTIPLE_TENANTS
+-----------
+* **Default**: ``False``
+* **Type**: ``boolean``
+
+Setting this to ``True`` will allow users to log in with multiple tenants.
+This is useful when you have a multi-tenant application and want to allow users to log in
+with their own Azure AD tenant.
 
 JWT_LEEWAY
 -----------

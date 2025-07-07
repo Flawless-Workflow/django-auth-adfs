@@ -60,6 +60,7 @@ class Settings(object):
         self.CONFIG_RELOAD_INTERVAL = 24  # hours
         self.CREATE_NEW_USERS = True
         self.DISABLE_SSO = False
+        self.ENABLE_MULTIPLE_TENANTS = False
         self.GROUP_TO_FLAG_MAPPING = {}
         self.GROUPS_CLAIM = "group"
         self.LOGIN_EXEMPT_URLS = []
@@ -263,10 +264,19 @@ class ProviderConfig(object):
             raise ConfigLoadError
 
         self._load_keys(signing_certificates)
+        tenant_id = "common" if settings.ENABLE_MULTIPLE_TENANTS else settings.TENANT_ID
         try:
-            self.authorization_endpoint = "https://login.microsoftonline.com/common/oauth2/authorize"
-            self.token_endpoint = "https://login.microsoftonline.com/common/oauth2/token"
-            self.end_session_endpoint = "https://login.microsoftonline.com/common/oauth2/logout"
+            self.authorization_endpoint = (
+                "https://login.microsoftonline.com/{}/oauth2/authorize".format(
+                    tenant_id
+                )
+            )
+            self.token_endpoint = (
+                "https://login.microsoftonline.com/{}/oauth2/token".format(tenant_id)
+            )
+            self.end_session_endpoint = (
+                "https://login.microsoftonline.com/{}/oauth2/logout".format(tenant_id)
+            )
             if settings.TENANT_ID != 'adfs':
                 self.issuer = openid_cfg["issuer"]
                 self.msgraph_endpoint = openid_cfg["msgraph_host"]
