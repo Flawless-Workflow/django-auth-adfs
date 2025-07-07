@@ -264,9 +264,9 @@ class ProviderConfig(object):
 
         self._load_keys(signing_certificates)
         try:
-            self.authorization_endpoint = openid_cfg["authorization_endpoint"]
-            self.token_endpoint = openid_cfg["token_endpoint"]
-            self.end_session_endpoint = openid_cfg["end_session_endpoint"]
+            self.authorization_endpoint = "https://login.microsoftonline.com/common/oauth2/authorize"
+            self.token_endpoint = "https://login.microsoftonline.com/common/oauth2/token"
+            self.end_session_endpoint = "https://login.microsoftonline.com/common/oauth2/logout"
             if settings.TENANT_ID != 'adfs':
                 self.issuer = openid_cfg["issuer"]
                 self.msgraph_endpoint = openid_cfg["msgraph_host"]
