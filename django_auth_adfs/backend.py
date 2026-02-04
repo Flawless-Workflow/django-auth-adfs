@@ -152,7 +152,7 @@ class AdfsBaseBackend(ModelBackend):
                     'verify_nbf': True,
                     'verify_iat': True,
                     'verify_aud': True,
-                    'verify_iss': True,
+                    'verify_iss': False if settings.ENABLE_MULTIPLE_TENANTS else True,
                     'require_exp': False,
                     'require_iat': False,
                     'require_nbf': False
