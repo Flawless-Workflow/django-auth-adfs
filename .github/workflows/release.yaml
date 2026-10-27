@@ -1,5 +1,9 @@
 name: Release
 
+# Modeled on flawless-chunking-service-client's release.yaml. The org composite actions
+# (setup-python, bump-version, publish-python-package) are private and unreachable from a
+# public fork, so their steps are inlined here.
+
 on:
   workflow_dispatch:
     inputs:
@@ -22,19 +26,41 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     outputs:
-      new-version: ${{ steps.bump-version.outputs.new-version }}
-      new-sha: ${{ steps.bump-version.outputs.new-sha }}
+      new-version: ${{ steps.new-version.outputs.new-version }}
+      new-sha: ${{ steps.new-sha.outputs.new-sha }}
     steps:
       - uses: actions/checkout@v4
 
-      - uses: Flawless-Workflow/flawless-github-actions/setup-python@v1
-        with:
-          poetry-install-args: '--only release --no-root'
+      - name: Configure git user
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-      - uses: Flawless-Workflow/flawless-github-actions/bump-version@v1
-        id: bump-version
+      - uses: actions/setup-python@v5
         with:
-          args: "--${{ github.event.inputs.release-type }}"
+          python-version: '3.12'
+
+      - name: Install Poetry and the release tools
+        run: |
+          pipx install poetry==2.5.1
+          poetry config virtualenvs.create false
+          poetry install --only release --no-root
+
+      - name: Bump version
+        run: bumpver update --${{ github.event.inputs.release-type }}
+
+      - name: Retrieve new version
+        id: new-version
+        run: |
+          eval "$(bumpver show --no-fetch --environ)"
+          echo "new-version=${CURRENT_VERSION}"
+          echo "new-version=${CURRENT_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Retrieve the new version's commit SHA
+        id: new-sha
+        run: |
+          echo "new-sha=$(git rev-parse HEAD)"
+          echo "new-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/upload-artifact@v4
         with:
@@ -72,10 +98,18 @@ jobs:
         with:
           ref: ${{ needs.bump-version.outputs.new-sha }}
 
-      - uses: Flawless-Workflow/flawless-github-actions/setup-python@v1
-
-      - uses: Flawless-Workflow/flawless-github-actions/publish-python-package@v1
+      - uses: actions/setup-python@v5
         with:
-          registry-url: ${{ secrets.POETRY_HTTP_BASIC_PRIVATE_URL }}
-          username: ${{ secrets.POETRY_HTTP_BASIC_PRIVATE_USERNAME }}
-          password: ${{ secrets.POETRY_HTTP_BASIC_PRIVATE_PASSWORD }}
+          python-version: '3.12'
+
+      - name: Install Poetry
+        run: pipx install poetry==2.5.1
+
+      - name: Build and publish
+        run: |
+          poetry config repositories.private "$REGISTRY_URL"
+          poetry publish --build --repository private
+        env:
+          REGISTRY_URL: ${{ secrets.POETRY_HTTP_BASIC_PRIVATE_URL }}
+          POETRY_HTTP_BASIC_PRIVATE_USERNAME: ${{ secrets.POETRY_HTTP_BASIC_PRIVATE_USERNAME }}
+          POETRY_HTTP_BASIC_PRIVATE_PASSWORD: ${{ secrets.POETRY_HTTP_BASIC_PRIVATE_PASSWORD }}
