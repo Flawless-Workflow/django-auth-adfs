@@ -29,9 +29,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          poetry config virtualenvs.create false
+          poetry env use "$(command -v python)"
           poetry check
           poetry install
+          echo "$(poetry env info --path)/bin" >> "$GITHUB_PATH"
 
       - name: Install Django ${{ matrix.django-version }}
         run: pip install "django~=${{ matrix.django-version }}.0"
