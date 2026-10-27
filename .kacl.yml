@@ -1,0 +1,20 @@
+kacl:
+  changelog_file: CHANGELOG.md
+  allowed_header_titles:
+    - Changelog
+  allowed_version_sections:
+    - Added
+    - Changed
+    - Deprecated
+    - Removed
+    - Fixed
+    - Security
+  git:
+    commit: True
+    tag: False
+  links:
+      host_url: https://github.com/Flawless-Workflow/django-auth-adfs
+      compare_versions_template: '{host}/compare/{previous_version}...{version}'
+      unreleased_changes_template: '{host}/compare/{latest_version}...main'
+      initial_version_template: '{host}/tree/{version}'
+      auto_generate: True
