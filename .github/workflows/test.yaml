@@ -1,0 +1,43 @@
+name: Unit Tests
+
+# The org composite actions (Flawless-Workflow/flawless-github-actions) are private and
+# unreachable from a public fork, so the steps they wrap are inlined here.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12']
+        django-version: ['5.1', '5.2', '6.0']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Poetry
+        run: pipx install poetry==2.5.1
+
+      - name: Install dependencies
+        run: |
+          poetry env use "$(command -v python)"
+          poetry check
+          poetry install
+          echo "$(poetry env info --path)/bin" >> "$GITHUB_PATH"
+
+      - name: Install Django ${{ matrix.django-version }}
+        run: pip install "django~=${{ matrix.django-version }}.0"
+
+      - name: Run tests
+        run: |
+          coverage run manage.py test -v 2
+          coverage report -m

@@ -1,6 +1,13 @@
 ADFS Authentication for Django
 ==============================
 
+.. note::
+
+    This is the Flawless Workflow fork of `snok/django-auth-adfs <https://github.com/snok/django-auth-adfs>`_.
+    It is published on the Flawless Python registry as ``flawless-django-auth-adfs``; the import
+    module stays ``django_auth_adfs``. The fork adds the ``ENABLE_MULTIPLE_TENANTS`` setting and
+    supports Python 3.12+ and Django 5.1+. See ``CHANGELOG.md`` for the fork's history.
+
 .. image:: https://readthedocs.org/projects/django-auth-adfs/badge/?version=latest
     :target: http://django-auth-adfs.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status

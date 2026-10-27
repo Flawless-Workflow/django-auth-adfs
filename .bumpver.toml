@@ -1,0 +1,20 @@
+[bumpver]
+current_version = "1.16.0"
+version_pattern = "MAJOR.MINOR.PATCH"
+commit = true
+tag = false   # Handled by post-commit hook
+push = false  # Handled by post-commit hook
+tag_scope = "default"
+pre_commit_hook = "./scripts/bumpver-pre-commit.sh"
+post_commit_hook = "./scripts/bumpver-post-commit.sh"
+
+[bumpver.file_patterns]
+"pyproject.toml" = [
+    '^version = "{version}"',
+]
+".bumpver.toml" = [
+    'current_version = "{version}"',
+]
+"django_auth_adfs/__init__.py" = [
+    "^__version__ = '{version}'",
+]
