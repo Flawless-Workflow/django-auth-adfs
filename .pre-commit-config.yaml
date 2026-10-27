@@ -1,0 +1,29 @@
+# Minimal config for the Flawless fork. It keeps upstream's flake8 setup (setup.cfg) and adds
+# no formatter on purpose: reformatting upstream code would make every upstream merge conflict.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: debug-statements
+      - id: mixed-line-ending
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint
+
+  - repo: https://github.com/python-poetry/poetry
+    rev: '2.2.1'
+    hooks:
+      - id: poetry-check
